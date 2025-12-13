@@ -4,9 +4,9 @@ A work-in-progress spoken-word programming language built in Java to evaluate wh
 
 ## Motivation
 
-Traditional programming languages prioritize precision and performance, often at the cost of readability for beginners and non-specialists. Spoke was created to explore whether a constrained, English-like syntax can make programming constructs easier to understand without sacrificing formal structure or deterministic execution.
+Traditional Programming languages often trade in readability and ease-of-understanding for faster programming speed and overall a more experienced programmer biased programming experience. Spoke is a language that i think might bridge the gap between childish implementation like Scratch and Python which is well known as the simplest/easiest to understand.
 
-The goal of this project is not to replace existing languages, but to evaluate whether spoken-word-inspired syntax can improve clarity and ease of reasoning for common control-flow patterns.
+"Spoke" is concieved to to resolve the inherent bridge between syntactic conciseness which favors experienced programmers and semantic transperency which is crucial for novice programmers to ingratiate themselves with the methodologies needed to understand programming methodologies and to apply them to other languages.
 
 ## Example
 
