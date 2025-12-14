@@ -98,7 +98,7 @@ public final class Lexer {
 
         for (String line : lines) {
             if (!line.isBlank()) {
-                for (String word : line.trim().split("\\s+")) {
+                for (String word : line.split("\\s+")) {
                     result.add(word);
                 }
             }
