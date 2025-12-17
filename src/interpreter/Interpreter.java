@@ -47,13 +47,21 @@ public final class Interpreter {
 
     private boolean evaluate(Condition condition) {
         int left = getVariable(condition.getIdentifier());
-        int right = condition.getNumber();
+        int right = condition.getValue();
 
-        return switch (condition.getOperator()) {
-            case LESS -> left < right;
-            case GREATER -> left > right;
-            case EQUAL -> left == right;
-        };
+        switch (condition.getOperator()) {
+            case LESS_THAN:
+                return left < right;
+            case GREATER_THAN:
+                return left > right;
+            case EQUAL_TO:
+                return left == right;
+            default:
+                throw new IllegalStateException(
+                    "Unknown operator: " + condition.getOperator()
+                );
+        }
+
     }
 
     private int getVariable(String name) {
