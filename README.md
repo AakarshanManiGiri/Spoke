@@ -8,6 +8,16 @@ Traditional Programming languages often trade in readability and ease-of-underst
 
 "Spoke" is concieved to to resolve the inherent bridge between syntactic conciseness which favors experienced programmers and semantic transperency which is crucial for novice programmers to ingratiate themselves with the methodologies needed to understand programming methodologies and to apply them to other languages.
 
+## Key Concepts
+
+Spoke is designed around:
+
+- **Spoken-word style syntax** — code that reads like English statements
+- **Improved readability** for novice programmers
+- **Semantic transparency** that reduces mental load while learning programming constructs
+
+---
+
 ## Example
 
 ```spoke
