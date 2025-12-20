@@ -26,4 +26,9 @@ let x be number 10
 loop while x less than number 100
     jump x by number 10
 end loop
+```
+## To Do:
+- **Expansion on Language Capabilites** - Specifically to include basic operations of harder topics.
+- **Providing Errors that provide better context**
+- **Step by Step Mode** - To provide a better point of view on how computers think.
 
