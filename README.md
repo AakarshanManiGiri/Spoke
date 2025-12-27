@@ -1,4 +1,6 @@
-# Spoke
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?text=Spoke&type=waving&color=gradient&height=120"/>
+</p>
 
 A work-in-progress spoken-word programming language built in Java to evaluate whether English-like syntax can improve developer readability, ease of use, and coding efficiency.
 
