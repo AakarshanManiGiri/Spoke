@@ -17,6 +17,7 @@ Spoke is designed around:
 - **Spoken-word style syntax** — code that reads like English statements
 - **Improved readability** for novice programmers
 - **Semantic transparency** that reduces mental load while learning programming constructs
+- **Better Flow**
 
 ---
 
