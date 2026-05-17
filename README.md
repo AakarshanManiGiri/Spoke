@@ -14,10 +14,17 @@ Traditional Programming languages often trade in readability and ease-of-underst
 
 Spoke is designed around:
 
-- **Spoken-word style syntax** — code that reads like English statements
-- **Improved readability** for novice programmers
-- **Semantic transparency** that reduces mental load while learning programming constructs
-- **Better Flow**
+- **Lexer:** word-based tokenizer with keyword mapping and newline preservation — Lexer.java.  
+- **Token set:** spoken keywords (let, be, number, loop, while, less/greater/than, equal/to, jump, by, end), integer literals, identifiers, NEWLINE, EOF — Token.java.  
+- **AST (statements):** `Stmt` marker; `LetStmt` and `JumpStmt` updated to hold expression initializers/deltas; `LoopStmt` and `Condition` support — LetStmt.java, JumpStmt.java, LoopStmt.java, Condition.java.  
+- **AST (expressions):** `Expr` hierarchy with `LiteralExpr`, `VariableExpr`, `BinaryExpr` (ADD/SUB/MUL/DIV) — Expr.java, BinaryExpr.java.  
+- **Parser:** statement parsing for `let`/`jump`/`loop` (`while` ... `end loop`), expression parsing with operator precedence (plus/minus, times/divide), and expressions allowed in `let`/`jump`/conditions — Parser.java.  
+- **Structured parse errors:** `ParseException` with line info for better diagnostics — ParseException.java.  
+- **Interpreter:** typed runtime `Value` (int, bool), expression evaluation, binary ops with division-by-zero check, environment storage, loop execution, and snapshot support — Interpreter.java, Value.java.  
+- **Runtime errors:** `RuntimeError` for clearer runtime diagnostics (undefined variables, type issues, division by zero) — RuntimeError.java.  
+- **Spoken arithmetic support:** lexer and parser accept spoken operators (`plus`, `minus`, `times`, `divided`/`over`) and map them to binary operations — (see Lexer.java and Parser.java).  
+- **CLI runner:** `Main` program to read a `.spoke` file, run it, and print the final environment snapshot — Main.java.  
+- **Not implemented yet:** unit tests, build/CI configuration, REPL, strings/booleans as first-class parser literals (parser currently parses integer literals only), functions/local scope, richer error recovery, and an `examples/` folder.
 
 ---
 
