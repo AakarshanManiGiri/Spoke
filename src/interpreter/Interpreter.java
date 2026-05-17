@@ -7,7 +7,7 @@ import java.util.Map;
 
 public final class Interpreter {
 
-    private final Map<String, Integer> environment = new HashMap<>();
+    private final Map<String, Value> environment = new HashMap<>();
 
     public void execute(List<Stmt> program) {
         for (Stmt stmt : program) {
@@ -18,21 +18,23 @@ public final class Interpreter {
     private void executeStmt(Stmt stmt) {
 
         if (stmt instanceof LetStmt letStmt) {
-            environment.put(letStmt.getName(), letStmt.getValue());
+            Value value = evaluateExpr(letStmt.getInitializer());
+            environment.put(letStmt.getName(), value);
             return;
         }
 
         if (stmt instanceof JumpStmt jumpStmt) {
-            int current = getVariable(jumpStmt.getName());
+            Value current = getVariable(jumpStmt.getName());
+            Value delta = evaluateExpr(jumpStmt.getDelta());
             environment.put(
                 jumpStmt.getName(),
-                current + jumpStmt.getDelta()
+                Value.ofInt(current.asInt() + delta.asInt())
             );
             return;
         }
 
         if (stmt instanceof LoopStmt loopStmt) {
-            while (evaluate(loopStmt.getCondition())) {
+            while (evaluateCondition(loopStmt.getCondition())) {
                 for (Stmt inner : loopStmt.getBody()) {
                     executeStmt(inner);
                 }
@@ -40,40 +42,65 @@ public final class Interpreter {
             return;
         }
 
-        throw new RuntimeException(
-            "Unknown statement type: " + stmt.getClass().getSimpleName()
-        );
+        throw new RuntimeError("Unknown statement type: " + stmt.getClass().getSimpleName());
     }
 
-    private boolean evaluate(Condition condition) {
-        int left = getVariable(condition.getIdentifier());
-        int right = condition.getValue();
+    private boolean evaluateCondition(Condition condition) {
+        Value left = getVariable(condition.getIdentifier());
+        Value right = evaluateExpr(condition.getValue());
 
         switch (condition.getOperator()) {
             case LESS_THAN:
-                return left < right;
+                return left.asInt() < right.asInt();
             case GREATER_THAN:
-                return left > right;
+                return left.asInt() > right.asInt();
             case EQUAL_TO:
-                return left == right;
+                return left.asInt() == right.asInt();
             default:
-                throw new IllegalStateException(
-                    "Unknown operator: " + condition.getOperator()
-                );
+                throw new RuntimeError("Unknown operator: " + condition.getOperator());
         }
 
     }
 
-    private int getVariable(String name) {
+    private Value evaluateExpr(Expr expr) {
+        if (expr instanceof LiteralExpr lit) {
+            return Value.ofInt(lit.getValue());
+        }
+
+        if (expr instanceof VariableExpr var) {
+            return getVariable(var.getName());
+        }
+
+        if (expr instanceof BinaryExpr bin) {
+            Value left = evaluateExpr(bin.getLeft());
+            Value right = evaluateExpr(bin.getRight());
+            switch (bin.getOperator()) {
+                case ADD:
+                    return Value.ofInt(left.asInt() + right.asInt());
+                case SUB:
+                    return Value.ofInt(left.asInt() - right.asInt());
+                case MUL:
+                    return Value.ofInt(left.asInt() * right.asInt());
+                case DIV:
+                    int rv = right.asInt();
+                    if (rv == 0) throw new RuntimeError("Division by zero");
+                    return Value.ofInt(left.asInt() / rv);
+                default:
+                    throw new RuntimeError("Unknown binary operator: " + bin.getOperator());
+            }
+        }
+
+        throw new RuntimeError("Unsupported expression type: " + expr.getClass().getSimpleName());
+    }
+
+    private Value getVariable(String name) {
         if (!environment.containsKey(name)) {
-            throw new RuntimeException(
-                "Runtime error: variable '" + name + "' is not defined"
-            );
+            throw new RuntimeError("variable '" + name + "' is not defined");
         }
         return environment.get(name);
     }
 
-    public Map<String, Integer> snapshot() {
+    public Map<String, Value> snapshot() {
         return Map.copyOf(environment);
     }
 }

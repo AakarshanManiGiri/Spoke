@@ -22,8 +22,15 @@ public final class Lexer {
         Map.entry("to", Type.TO),
         Map.entry("jump", Type.JUMP),
         Map.entry("by", Type.BY),
-        Map.entry("end", Type.END)
+        Map.entry("end", Type.END),
+        // spoken arithmetic
+        Map.entry("plus", Type.PLUS),
+        Map.entry("minus", Type.MINUS),
+        Map.entry("times", Type.TIMES),
+        Map.entry("divided", Type.DIVIDE),
+        Map.entry("over", Type.DIVIDE)
     );
+
 
     private final List<String> words;
     private int index = 0;

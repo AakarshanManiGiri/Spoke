@@ -10,9 +10,9 @@ public final class Condition {
 
     private final String identifier;
     private final Operator operator;
-    private final int value;
+    private final Expr value;
 
-    public Condition(String identifier, Operator operator, int value) {
+    public Condition(String identifier, Operator operator, Expr value) {
         this.identifier = identifier;
         this.operator = operator;
         this.value = value;
@@ -26,7 +26,7 @@ public final class Condition {
         return operator;
     }
 
-    public int getValue() {
+    public Expr getValue() {
         return value;
     }
 }

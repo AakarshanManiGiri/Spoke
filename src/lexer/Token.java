@@ -17,6 +17,11 @@ public final class Token {
         JUMP,
         BY,
         END,
+        // Operators (spoken)
+        PLUS,
+        MINUS,
+        TIMES,
+        DIVIDE,
 
         // Literals & identifiers
         IDENTIFIER,

@@ -3,9 +3,9 @@ package ast;
 public final class JumpStmt implements Stmt {
 
     private final String name;
-    private final int delta;
+    private final Expr delta;
 
-    public JumpStmt(String name, int delta) {
+    public JumpStmt(String name, Expr delta) {
         this.name = name;
         this.delta = delta;
     }
@@ -14,7 +14,7 @@ public final class JumpStmt implements Stmt {
         return name;
     }
 
-    public int getDelta() {
+    public Expr getDelta() {
         return delta;
     }
 }

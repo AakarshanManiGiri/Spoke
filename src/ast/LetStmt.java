@@ -3,18 +3,18 @@ package ast;
 public final class LetStmt implements Stmt {
 
     private final String name;
-    private final int value;
+    private final Expr initializer;
 
-    public LetStmt(String name, int value) {
+    public LetStmt(String name, Expr initializer) {
         this.name = name;
-        this.value = value;
+        this.initializer = initializer;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getValue() {
-        return value;
+    public Expr getInitializer() {
+        return initializer;
     }
 }

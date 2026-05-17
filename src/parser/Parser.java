@@ -42,19 +42,32 @@ public final class Parser {
     private Stmt letStatement() {
         Token name = consume(Type.IDENTIFIER, "Expected variable name after 'let'.");
         consume(Type.BE, "Expected 'be'.");
-        consume(Type.NUMBER, "Expected 'number'.");
-        Token value = consume(Type.INTEGER, "Expected integer literal.");
 
-        return new LetStmt(name.getLexeme(), Integer.parseInt(value.getLexeme()));
+        // Support either explicit 'number' keyword or a general expression
+        Expr initializer;
+        if (match(Type.NUMBER)) {
+            Token value = consume(Type.INTEGER, "Expected integer literal.");
+            initializer = new LiteralExpr(Integer.parseInt(value.getLexeme()));
+        } else {
+            initializer = parseExpression();
+        }
+
+        return new LetStmt(name.getLexeme(), initializer);
     }
 
     private Stmt jumpStatement() {
         Token name = consume(Type.IDENTIFIER, "Expected variable name after 'jump'.");
         consume(Type.BY, "Expected 'by'.");
-        consume(Type.NUMBER, "Expected 'number'.");
-        Token delta = consume(Type.INTEGER, "Expected integer literal.");
 
-        return new JumpStmt(name.getLexeme(), Integer.parseInt(delta.getLexeme()));
+        Expr delta;
+        if (match(Type.NUMBER)) {
+            Token value = consume(Type.INTEGER, "Expected integer literal.");
+            delta = new LiteralExpr(Integer.parseInt(value.getLexeme()));
+        } else {
+            delta = parseExpression();
+        }
+
+        return new JumpStmt(name.getLexeme(), delta);
     }
 
     private Stmt loopStatement() {
@@ -94,10 +107,62 @@ public final class Parser {
             return null;
         }
 
-        consume(Type.NUMBER, "Expected 'number'.");
-        Token value = consume(Type.INTEGER, "Expected integer.");
+        Expr value;
+        if (match(Type.NUMBER)) {
+            Token tok = consume(Type.INTEGER, "Expected integer.");
+            value = new LiteralExpr(Integer.parseInt(tok.getLexeme()));
+        } else {
+            value = parseExpression();
+        }
 
-        return new Condition(name.getLexeme(), op, Integer.parseInt(value.getLexeme()));
+        return new Condition(name.getLexeme(), op, value);
+    }
+
+    // ---------------- Expressions (simple precedence) ----------------
+
+    private Expr parseExpression() {
+        return parseTerm();
+    }
+
+    private Expr parseTerm() {
+        Expr expr = parseFactor();
+
+        while (match(Type.PLUS) || match(Type.MINUS)) {
+            Token operator = previous();
+            Expr right = parseFactor();
+            BinaryExpr.Operator op = operator.getType() == Type.PLUS ? BinaryExpr.Operator.ADD : BinaryExpr.Operator.SUB;
+            expr = new BinaryExpr(expr, op, right);
+        }
+
+        return expr;
+    }
+
+    private Expr parseFactor() {
+        Expr expr = parsePrimary();
+
+        while (match(Type.TIMES) || match(Type.DIVIDE)) {
+            Token operator = previous();
+            Expr right = parsePrimary();
+            BinaryExpr.Operator op = operator.getType() == Type.TIMES ? BinaryExpr.Operator.MUL : BinaryExpr.Operator.DIV;
+            expr = new BinaryExpr(expr, op, right);
+        }
+
+        return expr;
+    }
+
+    private Expr parsePrimary() {
+        if (match(Type.INTEGER)) {
+            Token t = previous();
+            return new LiteralExpr(Integer.parseInt(t.getLexeme()));
+        }
+
+        if (match(Type.IDENTIFIER)) {
+            Token t = previous();
+            return new VariableExpr(t.getLexeme());
+        }
+
+        error(peek(), "Expected expression.");
+        return null;
     }
 
     // ---------------- Helpers ----------------
@@ -139,8 +204,6 @@ public final class Parser {
     }
 
     private void error(Token token, String message) {
-        throw new RuntimeException(
-            "Parse error at line " + token.getLine() + ": " + message
-        );
+        throw new ParseException(token, message);
     }
 }
